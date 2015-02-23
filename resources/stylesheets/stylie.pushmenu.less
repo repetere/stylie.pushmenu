@@ -1,701 +1,285 @@
-/* General styles for the modal */
-
-/* 
-Styles for the html/body for special modal where we want 3d effects
-Note that we need a container wrapping all content on the page for the 
-perspective effects (not including the modals and the overlay).
-*/
-.ts-modal-perspective,
-.ts-modal-perspective body {
+.ts-pushmenu-container,
+.ts-pushmenu-scroller{
 	height: 100%;
+}
+.ts-pushmenu-scroller{
+	overflow-y: scroll;
+}
+.ts-pushmenu-scroller,
+.ts-pushmenu-scroller-inner{
+	position: relative;
+}
+.ts-pushmenu-container{
+	position: relative;
 	overflow: hidden;
 }
 
-.ts-modal-perspective body  {
-	// background: #222;
-	-webkit-perspective: 600px;
-	-moz-perspective: 600px;
-	perspective: 600px;
+.ts-pushmenu-menu-trigger {
+	position: relative;
+	padding-left: 60px;
+	font-size: 0.9em;
+	&:before {
+		position: absolute;
+		top: 2px;
+		left: 0;
+		width: 40px;
+		height: 6px;
+		background: #fff;
+		box-shadow: 0 6px #34495e, 0 12px #fff, 0 18px #34495e, 0 24px #fff;
+		content: '';
+	}
 }
 
-// .ts-modal-container {
-// 	background: #e74c3c;
-// 	min-height: 100%;
-// }
-
-.ts-modal {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	width: 50%;
-	max-width: 630px;
-	min-width: 320px;
-	height: auto;
-	z-index: 2000;
-	visibility: hidden;
-	-webkit-backface-visibility: hidden;
-	-moz-backface-visibility: hidden;
-	backface-visibility: hidden;
-	-webkit-transform: translateX(-50%) translateY(-50%);
-	-moz-transform: translateX(-50%) translateY(-50%);
-	-ms-transform: translateX(-50%) translateY(-50%);
-	transform: translateX(-50%) translateY(-50%);
-}
-
-.ts-modal-show {
-	visibility: visible;
-}
-
-.ts-modal-overlay {
-	position: fixed;
-	width: 100%;
+.ts-pushmenu-mp-pusher {
+	position: relative;
+	left: 0;
 	height: 100%;
-	visibility: hidden;
+}
+
+
+.ts-pushmenu-mp-menu {
+	position: absolute; /* we can't use fixed here :( */
 	top: 0;
 	left: 0;
-	z-index: 1000;
-	opacity: 0;
-	// background: rgba(143,27,15,0.8);
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
+	z-index: 1;
+	width: 300px;
+	height: 100%;
+	-webkit-transform: translate3d(-100%, 0, 0);
+	-moz-transform: translate3d(-100%, 0, 0);
+	transform: translate3d(-100%, 0, 0);
 }
 
-.ts-modal-show ~ .ts-modal-overlay {
-	opacity: 0.8;
-	visibility: visible;
-}
-
-/* Content styles */
-.ts-modal-content {
-	position: relative;
-	border-radius: 3px;
-	margin: 0 auto;
-}
-
-.ts-modal-border-radius{
-	border-radius: 3px;
-}
-
-.ts-modal-no-border{
-	border: none;
-}
-/* Individual modal styles with animations/transitions */
-
-/* Effect 1: Fade in and scale up */
-.ts-modal-effect-1 .ts-modal-content {
-	-webkit-transform: scale(0.7);
-	-moz-transform: scale(0.7);
-	-ms-transform: scale(0.7);
-	transform: scale(0.7);
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-1 .ts-modal-content {
-	-webkit-transform: scale(1);
-	-moz-transform: scale(1);
-	-ms-transform: scale(1);
-	transform: scale(1);
-	opacity: 1;
-}
-
-/* Effect 2: Slide from the right */
-.ts-modal-effect-2 .ts-modal-content {
-	-webkit-transform: translateX(20%);
-	-moz-transform: translateX(20%);
-	-ms-transform: translateX(20%);
-	transform: translateX(20%);
-	opacity: 0;
-	-webkit-transition: all 0.3s cubic-bezier(0.25, 0.5, 0.5, 0.9);
-	-moz-transition: all 0.3s cubic-bezier(0.25, 0.5, 0.5, 0.9);
-	transition: all 0.3s cubic-bezier(0.25, 0.5, 0.5, 0.9);
-}
-
-.ts-modal-show.ts-modal-effect-2 .ts-modal-content {
-	-webkit-transform: translateX(0);
-	-moz-transform: translateX(0);
-	-ms-transform: translateX(0);
-	transform: translateX(0);
-	opacity: 1;
-}
-
-/* Effect 3: Slide from the bottom */
-.ts-modal-effect-3 .ts-modal-content {
-	-webkit-transform: translateY(20%);
-	-moz-transform: translateY(20%);
-	-ms-transform: translateY(20%);
-	transform: translateY(20%);
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-3 .ts-modal-content {
-	-webkit-transform: translateY(0);
-	-moz-transform: translateY(0);
-	-ms-transform: translateY(0);
-	transform: translateY(0);
-	opacity: 1;
-}
-
-/* Effect 4: Newspaper */
-.ts-modal-effect-4 .ts-modal-content {
-	-webkit-transform: scale(0) rotate(720deg);
-	-moz-transform: scale(0) rotate(720deg);
-	-ms-transform: scale(0) rotate(720deg);
-	transform: scale(0) rotate(720deg);
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-4 ~ .ts-modal-overlay,
-.ts-modal-effect-4 .ts-modal-content {
-	-webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	transition: all 0.5s;
-}
-
-.ts-modal-show.ts-modal-effect-4 .ts-modal-content {
-	-webkit-transform: scale(1) rotate(0deg);
-	-moz-transform: scale(1) rotate(0deg);
-	-ms-transform: scale(1) rotate(0deg);
-	transform: scale(1) rotate(0deg);
-	opacity: 1;
-}
-
-/* Effect 5: fall */
-.ts-modal-effect-5.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-5 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: translateZ(600px) rotateX(20deg); 
-	-moz-transform: translateZ(600px) rotateX(20deg); 
-	-ms-transform: translateZ(600px) rotateX(20deg); 
-	transform: translateZ(600px) rotateX(20deg); 
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-5 .ts-modal-content {
-	-webkit-transition: all 0.3s ease-in;
-	-moz-transition: all 0.3s ease-in;
-	transition: all 0.3s ease-in;
-	-webkit-transform: translateZ(0px) rotateX(0deg);
-	-moz-transform: translateZ(0px) rotateX(0deg);
-	-ms-transform: translateZ(0px) rotateX(0deg);
-	transform: translateZ(0px) rotateX(0deg); 
-	opacity: 1;
-}
-
-/* Effect 6: side fall */
-.ts-modal-effect-6.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-6 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: translate(30%) translateZ(600px) rotate(10deg); 
-	-moz-transform: translate(30%) translateZ(600px) rotate(10deg);
-	-ms-transform: translate(30%) translateZ(600px) rotate(10deg);
-	transform: translate(30%) translateZ(600px) rotate(10deg); 
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-6 .ts-modal-content {
-	-webkit-transition: all 0.3s ease-in;
-	-moz-transition: all 0.3s ease-in;
-	transition: all 0.3s ease-in;
-	-webkit-transform: translate(0%) translateZ(0) rotate(0deg);
-	-moz-transform: translate(0%) translateZ(0) rotate(0deg);
-	-ms-transform: translate(0%) translateZ(0) rotate(0deg);
-	transform: translate(0%) translateZ(0) rotate(0deg);
-	opacity: 1;
-}
-
-/* Effect 7:  slide and stick to top */
-.ts-modal-effect-7{
+.ts-pushmenu-mp-level {
+	position: absolute;
 	top: 0;
-	-webkit-transform: translateX(-50%);
-	-moz-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	transform: translateX(-50%);
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #336ca6;
+	-webkit-transform: translate3d(-100%, 0, 0);
+	-moz-transform: translate3d(-100%, 0, 0);
+	transform: translate3d(-100%, 0, 0);
 }
 
-.ts-modal-effect-7 .ts-modal-content {
-	-webkit-transform: translateY(-200%);
-	-moz-transform: translateY(-200%);
-	-ms-transform: translateY(-200%);
-	transform: translateY(-200%);
-	-webkit-transition: all .3s;
-	-moz-transition: all .3s;
-	transition: all .3s;
+/* overlays for pusher and for level that gets covered */
+.ts-pushmenu-mp-pusher::after,
+.ts-pushmenu-mp-level::after,
+.ts-pushmenu-mp-level::before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	content: '';
 	opacity: 0;
 }
 
-.ts-modal-show.ts-modal-effect-7 .ts-modal-content {
-	-webkit-transform: translateY(0%);
-	-moz-transform: translateY(0%);
-	-ms-transform: translateY(0%);
-	transform: translateY(0%);
-	border-radius: 0 0 3px 3px;
+.ts-pushmenu-mp-pusher::after,
+.ts-pushmenu-mp-level::after {
+	background: rgba(0,0,0,0.3);
+	-webkit-transition: opacity 0.3s, width 0.1s 0.3s, height 0.1s 0.3s;
+	-moz-transition: opacity 0.3s, width 0.1s 0.3s, height 0.1s 0.3s;
+	transition: opacity 0.3s, width 0.1s 0.3s, height 0.1s 0.3s;
+}
+
+.ts-pushmenu-mp-level::after {
+	z-index: -1;
+}
+
+.ts-pushmenu-mp-pusher.ts-pushmenu-mp-pushed::after,
+.ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay::after {
+	width: 100%;
+	height: 100%;
 	opacity: 1;
+	-webkit-transition: opacity 0.3s;
+	-moz-transition: opacity 0.3s;
+	transition: opacity 0.3s;
 }
 
-/* Effect 8: 3D flip horizontal */
-.ts-modal-effect-8.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
+.ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay {
+	cursor: pointer;
 }
 
-.ts-modal-effect-8 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: rotateY(-70deg);
-	-moz-transform: rotateY(-70deg);
-	-ms-transform: rotateY(-70deg);
-	transform: rotateY(-70deg);
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-8 .ts-modal-content {
-	-webkit-transform: rotateY(0deg);
-	-moz-transform: rotateY(0deg);
-	-ms-transform: rotateY(0deg);
-	transform: rotateY(0deg);
-	opacity: 1;
-}
-
-/* Effect 9: 3D flip vertical */
-.ts-modal-effect-9.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-9 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: rotateX(-70deg);
-	-moz-transform: rotateX(-70deg);
-	-ms-transform: rotateX(-70deg);
-	transform: rotateX(-70deg);
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-9 .ts-modal-content {
-	-webkit-transform: rotateX(0deg);
-	-moz-transform: rotateX(0deg);
-	-ms-transform: rotateX(0deg);
-	transform: rotateX(0deg);
-	opacity: 1;
-}
-
-/* Effect 10: 3D sign */
-.ts-modal-effect-10.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-10 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: rotateX(-60deg);
-	-moz-transform: rotateX(-60deg);
-	-ms-transform: rotateX(-60deg);
-	transform: rotateX(-60deg);
-	-webkit-transform-origin: 50% 0;
-	-moz-transform-origin: 50% 0;
-	transform-origin: 50% 0;
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-10 .ts-modal-content {
-	-webkit-transform: rotateX(0deg);
-	-moz-transform: rotateX(0deg);
-	-ms-transform: rotateX(0deg);
-	transform: rotateX(0deg);
-	opacity: 1;
-}
-
-/* Effect 11: Super scaled */
-.ts-modal-effect-11 .ts-modal-content {
-	-webkit-transform: scale(2);
-	-moz-transform: scale(2);
-	-ms-transform: scale(2);
-	transform: scale(2);
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-11 .ts-modal-content {
-	-webkit-transform: scale(1);
-	-moz-transform: scale(1);
-	-ms-transform: scale(1);
-	transform: scale(1);
-	opacity: 1;
-}
-
-/* Effect 12:  Just me */
-.ts-modal-effect-12 .ts-modal-content {
-	-webkit-transform: scale(0.8);
-	-moz-transform: scale(0.8);
-	-ms-transform: scale(0.8);
-	transform: scale(0.8);
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-12 ~ .ts-modal-overlay {
-	background: #e74c3c;
-} 
-
-.ts-modal-effect-12 .ts-modal-content h3,
-.ts-modal-effect-12 .ts-modal-content {
+.ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay.ts-pushmenu-mp-level::before {
+	width: 100%;
+	height: 100%;
 	background: transparent;
-}
-
-.ts-modal-show.ts-modal-effect-12 .ts-modal-content {
-	-webkit-transform: scale(1);
-	-moz-transform: scale(1);
-	-ms-transform: scale(1);
-	transform: scale(1);
 	opacity: 1;
 }
 
-/* Effect 13: 3D slit */
-.ts-modal-effect-13.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-13 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: translateZ(-3000px) rotateY(90deg);
-	-moz-transform: translateZ(-3000px) rotateY(90deg);
-	-ms-transform: translateZ(-3000px) rotateY(90deg);
-	transform: translateZ(-3000px) rotateY(90deg);
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-13 .ts-modal-content {
-	-webkit-animation: slit .7s forwards ease-out;
-	-moz-animation: slit .7s forwards ease-out;
-	animation: slit .7s forwards ease-out;
-}
-
-@-webkit-keyframes slit {
-	50% { -webkit-transform: translateZ(-250px) rotateY(89deg); opacity: .5; -webkit-animation-timing-function: ease-out;}
-	100% { -webkit-transform: translateZ(0) rotateY(0deg); opacity: 1; }
-}
-
-@-moz-keyframes slit {
-	50% { -moz-transform: translateZ(-250px) rotateY(89deg); opacity: .5; -moz-animation-timing-function: ease-out;}
-	100% { -moz-transform: translateZ(0) rotateY(0deg); opacity: 1; }
-}
-
-@keyframes slit {
-	50% { transform: translateZ(-250px) rotateY(89deg); opacity: 1; animation-timing-function: ease-in;}
-	100% { transform: translateZ(0) rotateY(0deg); opacity: 1; }
-}
-
-/* Effect 14:  3D Rotate from bottom */
-.ts-modal-effect-14.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-14 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: translateY(100%) rotateX(90deg);
-	-moz-transform: translateY(100%) rotateX(90deg);
-	-ms-transform: translateY(100%) rotateX(90deg);
-	transform: translateY(100%) rotateX(90deg);
-	-webkit-transform-origin: 0 100%;
-	-moz-transform-origin: 0 100%;
-	transform-origin: 0 100%;
-	opacity: 0;
-	-webkit-transition: all 0.3s ease-out;
-	-moz-transition: all 0.3s ease-out;
-	transition: all 0.3s ease-out;
-}
-
-.ts-modal-show.ts-modal-effect-14 .ts-modal-content {
-	-webkit-transform: translateY(0%) rotateX(0deg);
-	-moz-transform: translateY(0%) rotateX(0deg);
-	-ms-transform: translateY(0%) rotateX(0deg);
-	transform: translateY(0%) rotateX(0deg);
-	opacity: 1;
-}
-
-/* Effect 15:  3D Rotate in from left */
-.ts-modal-effect-15.ts-modal {
-	-webkit-perspective: 1300px;
-	-moz-perspective: 1300px;
-	perspective: 1300px;
-}
-
-.ts-modal-effect-15 .ts-modal-content {
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-	-webkit-transform: translateZ(100px) translateX(-30%) rotateY(90deg);
-	-moz-transform: translateZ(100px) translateX(-30%) rotateY(90deg);
-	-ms-transform: translateZ(100px) translateX(-30%) rotateY(90deg);
-	transform: translateZ(100px) translateX(-30%) rotateY(90deg);
-	-webkit-transform-origin: 0 100%;
-	-moz-transform-origin: 0 100%;
-	transform-origin: 0 100%;
-	opacity: 0;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-15 .ts-modal-content {
-	-webkit-transform: translateZ(0px) translateX(0%) rotateY(0deg);
-	-moz-transform: translateZ(0px) translateX(0%) rotateY(0deg);
-	-ms-transform: translateZ(0px) translateX(0%) rotateY(0deg);
-	transform: translateZ(0px) translateX(0%) rotateY(0deg);
-	opacity: 1;
-}
-
-/* Effect 16:  Blur */
-.ts-modal-show.ts-modal-effect-16 ~ .ts-modal-overlay {
-	background: rgba(180,46,32,0.5);
-}
-
-.ts-modal-show.ts-modal-effect-16 ~ .ts-modal-container {
-	-webkit-filter: blur(3px);
-	-moz-filter: blur(3px);
-	filter: blur(3px);
-}
-
-.ts-modal-effect-16 .ts-modal-content {
-	-webkit-transform: translateY(-5%);
-	-moz-transform: translateY(-5%);
-	-ms-transform: translateY(-5%);
-	transform: translateY(-5%);
-	opacity: 0;
-}
-
-.ts-modal-show.ts-modal-effect-16 ~ .ts-modal-container,
-.ts-modal-effect-16 .ts-modal-content {
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	transition: all 0.3s;
-}
-
-.ts-modal-show.ts-modal-effect-16 .ts-modal-content {
-	-webkit-transform: translateY(0);
-	-moz-transform: translateY(0);
-	-ms-transform: translateY(0);
-	transform: translateY(0);
-	opacity: 1;
-}
-
-/* Effect 17:  Slide in from bottom with perspective on container */
-.ts-modal-show.ts-modal-effect-17 ~ .ts-modal-container {
-	height: 100%;
-	overflow: hidden;
-	-webkit-transition: -webkit-transform 0.3s;
-	-moz-transition: -moz-transform 0.3s;
-	transition: transform 0.3s;
-}	
-
-.ts-modal-show.ts-modal-effect-17 ~ .ts-modal-container,
-.ts-modal-show.ts-modal-effect-17 ~ .ts-modal-overlay  {
-	-webkit-transform: rotateX(-2deg);
-	-moz-transform: rotateX(-2deg);
-	-ms-transform: rotateX(-2deg);
-	transform: rotateX(-2deg);
-	-webkit-transform-origin: 50% 0%;
-	-moz-transform-origin: 50% 0%;
-	transform-origin: 50% 0%;
-	-webkit-transform-style: preserve-3d;
-	-moz-transform-style: preserve-3d;
-	transform-style: preserve-3d;
-}
-
-.ts-modal-effect-17 .ts-modal-content {
-	opacity: 0;
-	-webkit-transform: translateY(200%);
-	-moz-transform: translateY(200%);
-	-ms-transform: translateY(200%);
-	transform: translateY(200%);
-}
-
-.ts-modal-show.ts-modal-effect-17 .ts-modal-content {
-	-webkit-transform: translateY(0);
-	-moz-transform: translateY(0);
-	-ms-transform: translateY(0);
-	transform: translateY(0);
-	opacity: 1;
-	-webkit-transition: all 0.3s 0.2s;
-	-moz-transition: all 0.3s 0.2s;
-	transition: all 0.3s 0.2s;
-}
-
-/* Effect 18:  Slide from right with perspective on container */
-.ts-modal-show.ts-modal-effect-18 ~ .ts-modal-container {
-	height: 100%;
-	overflow: hidden;
-}
-
-.ts-modal-show.ts-modal-effect-18 ~ .ts-modal-overlay {
-	background: rgba(143,27,15,0.8);
+.ts-pushmenu-mp-pusher,
+.ts-pushmenu-mp-level {
 	-webkit-transition: all 0.5s;
 	-moz-transition: all 0.5s;
 	transition: all 0.5s;
 }
 
-.ts-modal-show.ts-modal-effect-18 ~ .ts-modal-container,
-.ts-modal-show.ts-modal-effect-18 ~ .ts-modal-overlay {
-	-webkit-transform-style: preserve-3d;
-	-webkit-transform-origin: 0% 50%;
-	-webkit-animation: rotateRightSideFirst 0.5s forwards ease-in;
-	-moz-transform-style: preserve-3d;
-	-moz-transform-origin: 0% 50%;
-	-moz-animation: rotateRightSideFirst 0.5s forwards ease-in;
-	transform-style: preserve-3d;
-	transform-origin: 0% 50%;
-	animation: rotateRightSideFirst 0.5s forwards ease-in;
+/* overlap */
+.ts-pushmenu-mp-overlap .ts-pushmenu-mp-level.ts-pushmenu-mp-level-open {
+	box-shadow: 1px 0 2px rgba(0,0,0,0.2);
+	-webkit-transform: translate3d(-40px, 0, 0);
+	-moz-transform: translate3d(-40px, 0, 0);
+	transform: translate3d(-40px, 0, 0);
 }
 
-@-webkit-keyframes rotateRightSideFirst {
-	50% { -webkit-transform: translateZ(-50px) rotateY(5deg); -webkit-animation-timing-function: ease-out; }
-	100% { -webkit-transform: translateZ(-200px); }
+/* First level */
+.ts-pushmenu-mp-menu > .ts-pushmenu-mp-level,
+.ts-pushmenu-mp-menu > .ts-pushmenu-mp-level.ts-pushmenu-mp-level-open,
+.ts-pushmenu-mp-menu.ts-pushmenu-mp-overlap > .ts-pushmenu-mp-level,
+.ts-pushmenu-mp-menu.ts-pushmenu-mp-overlap > .ts-pushmenu-mp-level.ts-pushmenu-mp-level-open {
+	box-shadow: none;
+	-webkit-transform: translate3d(0, 0, 0);
+	-moz-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
 }
 
-@-moz-keyframes rotateRightSideFirst {
-	50% { -moz-transform: translateZ(-50px) rotateY(5deg); -moz-animation-timing-function: ease-out; }
-	100% { -moz-transform: translateZ(-200px); }
+/* cover */
+.ts-pushmenu-mp-cover .ts-pushmenu-mp-level.ts-pushmenu-mp-level-open {
+	-webkit-transform: translate3d(0, 0, 0);
+	-moz-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
 }
 
-@keyframes rotateRightSideFirst {
-	50% { transform: translateZ(-50px) rotateY(5deg); animation-timing-function: ease-out; }
-	100% { transform: translateZ(-200px); }
+.ts-pushmenu-mp-cover .ts-pushmenu-mp-level.ts-pushmenu-mp-level-open > ul > li > .ts-pushmenu-mp-level:not(.ts-pushmenu-mp-level-open) {
+	-webkit-transform: translate3d(-100%, 0, 0);
+	-moz-transform: translate3d(-100%, 0, 0);
+	transform: translate3d(-100%, 0, 0);
 }
 
-.ts-modal-effect-18 .ts-modal-content {
-	-webkit-transform: translateX(200%);
-	-moz-transform: translateX(200%);
-	-ms-transform: translateX(200%);
-	transform: translateX(200%);
+/* content style */
+.ts-pushmenu-mp-menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ts-pushmenu-mp-menu h2 {
+	margin: 0;
+	padding: 1em;
+	color: rgba(0,0,0,0.4);
+	text-shadow: 0 0 1px rgba(0,0,0,0.1);
+	font-weight: 300;
+	font-size: 2em;
+}
+
+.ts-pushmenu-mp-menu.ts-pushmenu-mp-overlap h2::before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-right: 8px;
+	font-size: 75%;
+	line-height: 1.8;
 	opacity: 0;
+	-webkit-transition: opacity 0.3s, -webkit-transform 0.1s 0.3s;
+	-moz-transition: opacity 0.3s, -moz-transform 0.1s 0.3s;
+	transition: opacity 0.3s, transform 0.1s 0.3s;
+	-webkit-transform: translateX(-100%);
+	-moz-transform: translateX(-100%);
+	transform: translateX(-100%);
 }
 
-.ts-modal-show.ts-modal-effect-18 .ts-modal-content {
+.ts-pushmenu-mp-menu.ts-pushmenu-mp-cover h2 {
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: 1px;
+	font-size: 1em;
+}
+
+.ts-pushmenu-mp-overlap .ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > h2::before {
+	opacity: 1;
+	-webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+	-moz-transition: -moz-transform 0.3s, opacity 0.3s;
+	transition: transform 0.3s, opacity 0.3s;
 	-webkit-transform: translateX(0);
 	-moz-transform: translateX(0);
-	-ms-transform: translateX(0);
 	transform: translateX(0);
-	opacity: 1;
-	-webkit-transition: all 0.5s 0.1s;
-	-moz-transition: all 0.5s 0.1s;
-	transition: all 0.5s 0.1s;
 }
 
-/* Effect 19:  Slip in from the top with perspective on container */
-.ts-modal-show.ts-modal-effect-19 ~ .ts-modal-container {
-	height: 100%;
-	overflow: hidden;
+.ts-pushmenu-mp-menu ul li > a {
+	display: block;
+	padding: 0.7em 1em 0.7em 1.8em;
+	outline: none;
+	box-shadow: inset 0 -1px rgba(0,0,0,0.2);
+	text-shadow: 0 0 1px rgba(255,255,255,0.1);
+	font-size: 1.4em;
+	-webkit-transition: background 0.3s, box-shadow 0.3s;
+	-moz-transition: background 0.3s, box-shadow 0.3s;
+	transition: background 0.3s, box-shadow 0.3s;
 }
 
-.ts-modal-show.ts-modal-effect-19 ~ .ts-modal-overlay {
-	-webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	transition: all 0.5s;
+.ts-pushmenu-mp-menu ul li::before {
+	position: absolute;
+	left: 10px;
+	z-index: -1;
+	color: rgba(0,0,0,0.2);
+	line-height: 3.5;
 }
 
-.ts-modal-show.ts-modal-effect-19 ~ .ts-modal-container,
-.ts-modal-show.ts-modal-effect-19 ~ .ts-modal-overlay {
-	-webkit-transform-style: preserve-3d;
-	-webkit-transform-origin: 50% 100%;
-	-webkit-animation: OpenTop 0.5s forwards ease-in;
-	-moz-transform-style: preserve-3d;
-	-moz-transform-origin: 50% 100%;
-	-moz-animation: OpenTop 0.5s forwards ease-in;
-	transform-style: preserve-3d;
-	transform-origin: 50% 100%;
-	animation: OpenTop 0.5s forwards ease-in;
+.ts-pushmenu-mp-level > ul > li:first-child > a {
+	box-shadow: inset 0 -1px rgba(0,0,0,0.2), inset 0 1px rgba(0,0,0,0.2);
 }
 
-@-webkit-keyframes OpenTop {
-	50% { 
-		-webkit-transform: rotateX(10deg); 
-		-webkit-animation-timing-function: ease-out; 
-	}
+.ts-pushmenu-mp-menu ul li a:hover,
+.ts-pushmenu-mp-level > ul > li:first-child > a:hover {
+	background: rgba(0,0,0,0.2);
+	box-shadow: inset 0 -1px rgba(0,0,0,0);
 }
 
-@-moz-keyframes OpenTop {
-	50% { 
-		-moz-transform: rotateX(10deg); 
-		-moz-animation-timing-function: ease-out; 
-	}
+.ts-pushmenu-mp-menu .ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > ul > li > a,
+.ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > ul > li:first-child > a {
+	box-shadow: inset 0 -1px rgba(0,0,0,0);
 }
 
-@keyframes OpenTop {
-	50% { 
-		transform: rotateX(10deg); 
-		animation-timing-function: ease-out; 
-	}
+.ts-pushmenu-mp-level > ul > li:first-child > a:hover,
+.ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > ul > li:first-child > a {
+	box-shadow: inset 0 -1px rgba(0,0,0,0), inset 0 1px rgba(0,0,0,0);
+} /* seems like Chrome 34.0.1847.131 needs the second shadow otherwise the transition breaks */
+.ts-pushmenu-mp-back {
+	background: rgba(0,0,0,0.1);
+	outline: none;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 700;
+	display: block;
+	font-size: 0.8em;
+	padding: 1em;
+	position: relative;
+	box-shadow: inset 0 1px rgba(0,0,0,0.1);
+	-webkit-transition: background 0.3s;
+	-moz-transition: background 0.3s;
+	transition: background 0.3s;
 }
 
-.ts-modal-effect-19 .ts-modal-content {
-	-webkit-transform: translateY(-200%);
-	-moz-transform: translateY(-200%);
-	-ms-transform: translateY(-200%);
-	transform: translateY(-200%);
-	opacity: 0;
+.ts-pushmenu-mp-back::after {
+	font-family: 'linecons';
+	position: absolute;
+	content: "\e037";
+	right: 10px;
+	font-size: 1.3em;
+	color: rgba(0,0,0,0.3);
 }
 
-.ts-modal-show.ts-modal-effect-19 .ts-modal-content {
-	-webkit-transform: translateY(0);
-	-moz-transform: translateY(0);
-	-ms-transform: translateY(0);
-	transform: translateY(0);
-	opacity: 1;
-	-webkit-transition: all 0.5s 0.1s;
-	-moz-transition: all 0.5s 0.1s;
-	transition: all 0.5s 0.1s;
+.ts-pushmenu-mp-menu .ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > .ts-pushmenu-mp-back,
+.ts-pushmenu-mp-menu .ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > .ts-pushmenu-mp-back::after {
+	background: transparent;
+	box-shadow: none;
+	color: transparent;
 }
 
-// @media screen and (max-width: 32em) {
-// 	body { font-size: 75%; }
-// }
+/* Fallback example for browsers that don't support 3D transforms (and no JS fallback) */
+/* We'll show the first level only */
+.no-csstransforms3d .ts-pushmenu-mp-pusher,
+.no-js .ts-pushmenu-mp-pusher {
+	padding-left: 300px;
+}
+
+.no-csstransforms3d .ts-pushmenu-mp-menu .ts-pushmenu-mp-level,
+.no-js .ts-pushmenu-mp-menu .ts-pushmenu-mp-level {
+	display: none;
+}
+
+.no-csstransforms3d .ts-pushmenu-mp-menu > .ts-pushmenu-mp-level,
+.no-js .ts-pushmenu-mp-menu > .ts-pushmenu-mp-level {
+	display: block;
+}

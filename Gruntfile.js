@@ -158,5 +158,5 @@ module.exports = function (grunt) {
 	grunt.registerTask('packagejs', ['browserify', 'uglify']);
 	grunt.registerTask('doc', 'jsdoc');
 	grunt.registerTask('test', 'simplemocha');
-	grunt.registerTask('html', 'newer:template');
+	grunt.registerTask('html', 'template');
 };

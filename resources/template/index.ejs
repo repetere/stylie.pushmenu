@@ -12,39 +12,16 @@
   <script src='js/example.min.js'></script>
 </head>
 
-<body class="ts--container ts-no-x-overflow">
-  <main class="ts-container ">
-    <article class="ts-text-container">
-      <section class="ts-no-x-overflow">
-        <h1>CommonJS/Browserified Nifty Push Menu Effects
-        </h1>
-        <h3>
-          <small>Some inspiration for different modal window appearances</small>
-        </h3>
-        <div class="ts-row">
-          <div class="ts-col-span6 ts-screenxs-col-span12">
-            <p>There are many possibilities for modal overlays to appear. Here are some modern ways of showing them using CSS transitions and animations.</p>
-            <p>Ported from CoDrops: <a href="http://tympanus.net/codrops/2013/06/25/nifty-modal-window-effects/">Nifty Push Menu Effects</a>
-            </p>
-            <p>
-              <strong> Full API <a href="http://typesettin.github.io/stylie.pushmenu/api/html">documentation</a>
-              </strong>
-            </p>
-          </div>
-          <div class="ts-col-span6 ts-screenxs-col-span12">
-
-            <div id="td-modal-buttons" class="ts-container-margin-lg">
-              <% include shared/buttons %>
-            </div>
-          </div>
-        </div>
-
-      </section>
-    </article>
-  </main>
-  <div class="ts-screenxx-hidden">
-    <% include shared/modals %>
-      <div class="ts-modal-overlay ts-bg-accent-color"></div>
+<body class="ts-pushmenu-container">
+  <div class="ts-pushmenu-mp-pusher">
+    <nav id="ts-pushmenu-mp-menu" class="ts-pushmenu-mp-menu">
+      <% include shared/nav %>
+    </nav>
+    <main class="ts-pushmenu-scroller">
+      <div class="ts-pushmenu-scroller-inner">
+        <% include shared/main_content %>
+      </div>
+    </main>
   </div>
   <!-- the overlay element -->
   <script>
