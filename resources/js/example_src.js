@@ -17,6 +17,7 @@ window.addEventListener('load', function () {
 	menuTriggerElement = document.getElementById('trigger');
 	// modalButtonContainer = document.querySelector('#td-modal-buttons');
 	StyliePushMenu = new PushMenu({
+		type: 'overlap',
 		el: menuElement,
 		trigger: menuTriggerElement
 	});
