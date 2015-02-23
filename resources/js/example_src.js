@@ -1,20 +1,26 @@
 'use strict';
 
-var ComponentModal = require('../../index'),
-	classie = require('classie'),
-	ComponentModal1,
-	modalButtonContainer;
+var PushMenu = require('../../index'),
+	StyliePushMenu,
+	menuElement,
+	menuTriggerElement;
+// modalButtonContainer;
 
-var openModalButtonHandler = function (e) {
-	if (classie.has(e.target, 'md-trigger')) {
-		ComponentModal1.show(e.target.getAttribute('data-modal'));
-	}
-};
+// var openModalButtonHandler = function (e) {
+// 	if (classie.has(e.target, 'md-trigger')) {
+// 		ComponentModal1.show(e.target.getAttribute('data-modal'));
+// 	}
+// };
 
 window.addEventListener('load', function () {
-	modalButtonContainer = document.querySelector('#td-modal-buttons');
-	ComponentModal1 = new ComponentModal({});
-	modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
+	menuElement = document.getElementById('ts-pushmenu-mp-menu');
+	menuTriggerElement = document.getElementById('trigger');
+	// modalButtonContainer = document.querySelector('#td-modal-buttons');
+	StyliePushMenu = new PushMenu({
+		el: menuElement,
+		trigger: menuTriggerElement
+	});
+	// modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
 
-	window.ComponentModal1 = ComponentModal1;
+	window.StyliePushMenu = StyliePushMenu;
 }, false);

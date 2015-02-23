@@ -19,89 +19,123 @@ module.exports = require('./lib/stylie.pushmenu');
  */
 'use strict';
 
-var extend = require('util-extend'),
-	classie = require('classie'),
+var classie = require('classie'),
+	detectCSS = require('detectcss'),
+	extend = require('util-extend'),
 	events = require('events'),
-	htmlEl,
 	util = require('util');
 
 /**
- * A module that represents a ComponentModals object, a componentTab is a page composition tool.
+ * A module that represents a PushMenu object, a componentTab is a page composition tool.
  * @{@link https://github.com/typesettin/stylie.pushmenu}
  * @author Yaw Joseph Etse
  * @copyright Copyright (c) 2014 Typesettin. All rights reserved.
  * @license MIT
- * @constructor ComponentModals
+ * @constructor PushMenu
  * @requires module:util-extent
  * @requires module:util
  * @requires module:events
  * @param {object} el element of tab container
  * @param {object} options configuration options
  */
-var ComponentModals = function (options) {
+var PushMenu = function (options) {
 	events.EventEmitter.call(this);
 
-	// this.el = el;
 	this.options = extend(this.options, options);
-	// console.log(this.options);
+	console.log(this.options);
 	this._init();
-	this.show = this._show;
-	this.hide = this._hide;
+	// this.show = this._show;
+	// this.hide = this._hide;
 };
 
-var closeModalOnKeydown = function (e) {
-	if (this.options.close_modal_on_escape_key === true && e.keyCode === 27) {
-		this.hide(this.options.current_modal);
-		document.querySelector('html').removeEventListener('keydown', closeModalOnKeydown, false);
+util.inherits(PushMenu, events.EventEmitter);
+
+// taken from https://github.com/inuyaksa/jquery.nicescroll/blob/master/jquery.nicescroll.js
+var hasParent = function (e, id) {
+	if (!e) {
+		return false;
+	}
+	else {
+		var el = e.target || e.srcElement || e || false;
+		while (el && el.id !== id) {
+			el = el.parentNode || false;
+		}
+		return (el !== false);
 	}
 };
 
-var closeOverlayOnClick = function () {
-	this.hide(this.options.current_modal);
-};
-
-var closeModalClickHandler = function (e) {
-	if (classie.has(e.target, this.options.modal_close_class)) {
-		this.hide(this.options.current_modal);
+// returns the depth of the element "e" relative to element with id=id
+// for this calculation only parents with classname = waypoint are considered
+var getLevelDepth = function (e, id, waypoint, cnt) {
+	cnt = cnt || 0;
+	if (e.id.indexOf(id) >= 0) {
+		return cnt;
+	}
+	else {
+		if (classie.has(e, waypoint)) {
+			++cnt;
+		}
+		return e.parentNode && getLevelDepth(e.parentNode, id, waypoint, cnt);
 	}
 };
 
-util.inherits(ComponentModals, events.EventEmitter);
+// returns the closest element to 'e' that has class "classname"
+var closest = function (e, classname) {
+	if (classie.has(e, classname)) {
+		return e;
+	}
+	return e.parentNode && closest(e.parentNode, classname);
+};
+
 
 /** module default configuration */
-ComponentModals.prototype.options = {
-	start: 0,
-	modal_overlay_selector: '.ts-modal-overlay',
-	modal_elements: '.ts-modal',
-	modal_body_container_class: 'ts-modal-container',
-	modal_close_class: 'ts-modal-close',
-	modal_default_class: 'ts-modal-effect-1',
-	modals: {},
-	overlay: null,
-	close_modal_on_overlay_click: true,
-	close_modal_on_escape_key: true,
-	current_modal: ''
+PushMenu.prototype.options = {
+	el: null,
+	trigger: null,
+	// overlap: there will be a gap between open levels
+	// cover: the open levels will be on top of any previous open level
+	type: 'overlap', // overlap || cover
+	// space between each overlaped level
+	levelSpacing: 40,
+	level: 0,
+	// classname for the element (if any) that when clicked closes the current level
+	backClass: 'ts-pushmenu-mp-back',
+	pushedClass: 'ts-pushmenu-mp-pushed',
+	levelClass: 'ts-pushmenu-mp-level',
+	levelSelector: 'div.ts-pushmenu-mp-level',
+	wrapperSelector: '#ts-pushmenu-mp-pusher',
+	menuOpenClass: 'mp-level-open',
+	menuOverlayClass: 'mp-level-overlay',
 };
 /**
  * initializes modals and shows current tab.
  * @emits modalsInitialized
  */
-ComponentModals.prototype._init = function () {
-	var body = document.querySelector('body');
-	htmlEl = document.querySelector('html');
-
-	this.options.overlay = document.querySelector(this.options.modal_overlay_selector);
-	this.options.modalEls = document.querySelectorAll(this.options.modal_elements);
-
-	if (!classie.has(body, this.options.modal_body_container_class)) {
-		classie.add(body, this.options.modal_body_container_class);
-	}
-
-	for (var x in this.options.modalEls) {
-		if (typeof this.options.modalEls[x] === 'object') {
-			this.options.modals[this.options.modalEls[x].getAttribute('data-name')] = this.options.modalEls[x];
-		}
-	}
+PushMenu.prototype._init = function () {
+	// if menu is open or not
+	this.options.open = false;
+	this.options.support = detectCSS.feature('transform');
+	// level depth
+	this.options.level = 0;
+	// the moving wrapper
+	this.options.wrapper = document.querySelector(this.options.wrapperSelector);
+	// the mp-level elements
+	this.options.levels = Array.prototype.slice.call(this.options.el.querySelectorAll(this.options.levelSelector));
+	// save the depth of each of these mp-level elements
+	var self = this;
+	this.options.levels.forEach(function (el, i) {
+		el.setAttribute('data-level', getLevelDepth(el, self.options.el.id, self.options.levelClass));
+		// console.log('levels i', i);
+	});
+	// the menu items
+	this.options.menuItems = Array.prototype.slice.call(this.options.el.querySelectorAll('li'));
+	// if type == "cover" these will serve as hooks to move back to the previous level
+	this.options.levelBack = Array.prototype.slice.call(this.options.el.querySelectorAll('.' + this.options.backClass));
+	// event type (if mobile use touch events)
+	// this.options.eventtype = mobilecheck() ? 'touchstart' : 'click';
+	// add the class mp-overlap or mp-cover to the main element depending on options.type
+	classie.add(this.options.el, 'ts-pushmenu-mp-' + this.options.type);
+	// initialize / bind the necessary events
 	this._initEvents();
 	this.emit('modalsInitialized');
 };
@@ -109,72 +143,155 @@ ComponentModals.prototype._init = function () {
 /**
  * handle tab click events.
  */
-ComponentModals.prototype._initEvents = function () {
-	if (this.options.close_modal_on_overlay_click === true) {
-		this.options.overlay.addEventListener('click', closeOverlayOnClick.bind(this), false);
-	}
+PushMenu.prototype._initEvents = function () {
+	var self = this;
+
+	// the menu should close if clicking somewhere on the body
+	var bodyClickFn = function (el) {
+		self._resetMenu();
+		el.removeEventListener('click', bodyClickFn);
+	};
+
+	// open (or close) the menu
+	this.options.trigger.addEventListener('click', function (ev) {
+		ev.stopPropagation();
+		ev.preventDefault();
+		if (self.open) {
+			self._resetMenu();
+		}
+		else {
+			self._openMenu();
+			// the menu should close if clicking somewhere on the body (excluding clicks on the menu)
+			document.addEventListener('click', function (ev) {
+				if (self.open && !hasParent(ev.target, self.options.el.id)) {
+					bodyClickFn(this);
+				}
+			});
+		}
+	});
+
+	// opening a sub level menu
+	this.options.menuItems.forEach(function (el, i) {
+		// console.log('this.options.menuItems i', i);
+		// check if it has a sub level
+		var subLevel = el.querySelector('div.mp-level');
+		if (subLevel) {
+			el.querySelector('a').addEventListener('click', function (ev) {
+				ev.preventDefault();
+				var level = closest(el, this.options.levelClass).getAttribute('data-level');
+				if (self.options.level <= level) {
+					ev.stopPropagation();
+					classie.add(closest(el, this.options.levelClass), 'mp-level-overlay');
+					self._openMenu(subLevel);
+				}
+			});
+		}
+	});
+
+	// closing the sub levels :
+	// by clicking on the visible part of the level element
+	this.options.levels.forEach(function (el, i) {
+		// console.log('this.options.levels i', i);
+		el.addEventListener('click', function (ev) {
+			ev.stopPropagation();
+			var level = el.getAttribute('data-level');
+			if (self.options.level > level) {
+				self.options.level = level;
+				self._closeMenu();
+			}
+		});
+	});
+
+	// by clicking on a specific element
+	this.options.levelBack.forEach(function (el, i) {
+		// console.log('this.options.levelBack i', i);
+		el.addEventListener('click', function (ev) {
+			ev.preventDefault();
+			var level = closest(el, this.options.levelClass).getAttribute('data-level');
+			if (self.options.level <= level) {
+				ev.stopPropagation();
+				self.options.level = closest(el, this.options.levelClass).getAttribute('data-level') - 1;
+				self.options.level === 0 ? self._resetMenu() : self._closeMenu();
+			}
+		});
+	});
 	this.emit('modalsEventsInitialized');
 };
 
 /**
- * Hides a modal component.
+ * _openMenu a modal component.
  * @param {string} modal name
  * @emits showModal
  */
-ComponentModals.prototype._hide = function (modal_name) {
-	var modal = this.options.modals[modal_name];
-	classie.remove(modal, 'ts-modal-show');
-	this.options.current_modal = '';
+PushMenu.prototype._openMenu = function (subLevel) {
+	// increment level depth
+	++this.options.level;
 
-	modal.removeEventListener('click', closeModalClickHandler, false);
+	// move the main wrapper
+	var levelFactor = (this.options.level - 1) * this.options.levelSpacing,
+		translateVal = this.options.type === 'overlap' ? this.options.el.offsetWidth + levelFactor : this.options.el.offsetWidth;
 
-	if (this.options.close_modal_on_escape_key === true) {
-		htmlEl.removeEventListener('keydown', closeModalOnKeydown.bind(this), false);
-	}
+	this._setTransform('translate3d(' + translateVal + 'px,0,0)');
 
-
-	this.emit('hideModal', {
-		modal: modal,
-		modal_name: modal_name
-	});
-};
-
-/**
- * Shows a modal component.
- * @param {string} modal name
- * @emits showModal
- */
-ComponentModals.prototype._show = function (modal_name) {
-	var modal = this.options.modals[modal_name],
-		hasModalEffect = false;
-
-	for (var y = 0; y < modal.classList.length; y++) {
-		if (modal.classList[y].search('ts-modal-effect-') >= 0) {
-			hasModalEffect = true;
+	if (subLevel) {
+		// reset transform for sublevel
+		this._setTransform('', subLevel);
+		// need to reset the translate value for the level menus that have the same level depth and are not open
+		for (var i = 0, len = this.options.levels.length; i < len; ++i) {
+			var levelEl = this.options.levels[i];
+			if (levelEl !== subLevel && !classie.has(levelEl, this.options.menuOpenClass)) {
+				this._setTransform('translate3d(-100%,0,0) translate3d(' + -1 * levelFactor + 'px,0,0)', levelEl);
+			}
 		}
 	}
-
-	if (hasModalEffect === false) {
-		classie.add(modal, this.options.modal_default_class);
+	// add class mp-pushed to main wrapper if opening the first time
+	if (this.options.level === 1) {
+		classie.add(this.options.wrapper, this.options.pushedClass);
+		this.options.open = true;
 	}
-
-	classie.add(modal, 'ts-modal-show');
-	this.options.current_modal = modal_name;
-
-	modal.addEventListener('click', closeModalClickHandler.bind(this), false);
-
-	if (this.options.close_modal_on_escape_key === true) {
-		htmlEl.addEventListener('keydown', closeModalOnKeydown.bind(this), false);
-	}
-
-	this.emit('showModal', {
-		modal: modal,
-		modal_name: modal_name
-	});
+	// add class mp-level-open to the opening level element
+	classie.add(subLevel || this.options.levels[0], this.options.menuOpenClass);
 };
-module.exports = ComponentModals;
 
-},{"classie":3,"events":5,"util":9,"util-extend":10}],3:[function(require,module,exports){
+// close the menu
+PushMenu.prototype._resetMenu = function () {
+	this._setTransform('translate3d(0,0,0)');
+	this.options.level = 0;
+	// remove class mp-pushed from main wrapper
+	classie.remove(this.options.wrapper, this.options.pushedClass);
+	this._toggleLevels();
+	this.options.open = false;
+};
+// close sub menus
+PushMenu.prototype._closeMenu = function () {
+	var translateVal = this.options.type === 'overlap' ? this.options.el.offsetWidth + (this.options.level - 1) * this.options.levelSpacing : this.options.el.offsetWidth;
+	this._setTransform('translate3d(' + translateVal + 'px,0,0)');
+	this._toggleLevels();
+};
+// translate the el
+PushMenu.prototype._setTransform = function (val, el) {
+	el = el || this.options.wrapper;
+	el.style.WebkitTransform = val;
+	el.style.MozTransform = val;
+	el.style.transform = val;
+};
+// removes classes mp-level-open from closing levels
+PushMenu.prototype._toggleLevels = function () {
+	for (var i = 0, len = this.options.levels.length; i < len; ++i) {
+		var levelEl = this.options.levels[i];
+		if (levelEl.getAttribute('data-level') >= this.options.level + 1) {
+			classie.remove(levelEl, this.options.menuOpenClass);
+			classie.remove(levelEl, this.options.menuOverlayClass);
+		}
+		else if (Number(levelEl.getAttribute('data-level')) === this.options.level) {
+			classie.remove(levelEl, this.options.menuOverlayClass);
+		}
+	}
+};
+
+module.exports = PushMenu;
+
+},{"classie":3,"detectcss":5,"events":7,"util":11,"util-extend":12}],3:[function(require,module,exports){
 /*
  * classie
  * http://github.amexpub.com/modules/classie
@@ -268,6 +385,55 @@ module.exports = require('./lib/classie');
     window.classie = classie;
   }
 },{}],5:[function(require,module,exports){
+/*
+ * detectCSS
+ * http://github.amexpub.com/modules/detectCSS
+ *
+ * Copyright (c) 2013 AmexPub. All rights reserved.
+ */
+
+module.exports = require('./lib/detectCSS');
+
+},{"./lib/detectCSS":6}],6:[function(require,module,exports){
+/*
+ * detectCSS
+ * http://github.amexpub.com/modules
+ *
+ * Copyright (c) 2013 Amex Pub. All rights reserved.
+ */
+
+'use strict';
+
+exports.feature = function(style) {
+    var b = document.body || document.documentElement;
+    var s = b.style;
+    var p = style;
+    if(typeof s[p] === 'string') {return true; }
+
+    // Tests for vendor specific prop
+    var v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'];
+    p = p.charAt(0).toUpperCase() + p.substr(1);
+    for(var i=0; i<v.length; i++) {
+      if(typeof s[v[i] + p] === 'string') { return true; }
+    }
+    return false;
+};
+
+exports.prefixed = function(style){
+    var b = document.body || document.documentElement;
+    var s = b.style;
+    var p = style;
+    if(typeof s[p] === 'string') {return p; }
+
+    // Tests for vendor specific prop
+    var v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms',''];
+    p = p.charAt(0).toUpperCase() + p.substr(1);
+    for(var i=0; i<v.length; i++) {
+      if(typeof s[v[i] + p] === 'string') { return v[i] + p; }
+    }
+    return false;
+};
+},{}],7:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -570,7 +736,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -595,7 +761,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -660,14 +826,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1257,7 +1423,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":8,"_process":7,"inherits":6}],10:[function(require,module,exports){
+},{"./support/isBuffer":10,"_process":9,"inherits":8}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1292,26 +1458,32 @@ function extend(origin, add) {
   return origin;
 }
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
-var ComponentModal = require('../../index'),
-	classie = require('classie'),
-	ComponentModal1,
-	modalButtonContainer;
+var PushMenu = require('../../index'),
+	StyliePushMenu,
+	menuElement,
+	menuTriggerElement;
+// modalButtonContainer;
 
-var openModalButtonHandler = function (e) {
-	if (classie.has(e.target, 'md-trigger')) {
-		ComponentModal1.show(e.target.getAttribute('data-modal'));
-	}
-};
+// var openModalButtonHandler = function (e) {
+// 	if (classie.has(e.target, 'md-trigger')) {
+// 		ComponentModal1.show(e.target.getAttribute('data-modal'));
+// 	}
+// };
 
 window.addEventListener('load', function () {
-	modalButtonContainer = document.querySelector('#td-modal-buttons');
-	ComponentModal1 = new ComponentModal({});
-	modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
+	menuElement = document.getElementById('ts-pushmenu-mp-menu');
+	menuTriggerElement = document.getElementById('trigger');
+	// modalButtonContainer = document.querySelector('#td-modal-buttons');
+	StyliePushMenu = new PushMenu({
+		el: menuElement,
+		trigger: menuTriggerElement
+	});
+	// modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
 
-	window.ComponentModal1 = ComponentModal1;
+	window.StyliePushMenu = StyliePushMenu;
 }, false);
 
-},{"../../index":1,"classie":3}]},{},[11]);
+},{"../../index":1}]},{},[13]);
