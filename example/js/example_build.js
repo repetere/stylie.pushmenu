@@ -99,7 +99,9 @@ PushMenu.prototype.options = {
 	levelSpacing: 40,
 	level: 0,
 	// classname for the element (if any) that when clicked closes the current level
+	position: 'left',
 	backClass: 'ts-pushmenu-mp-back',
+	rightClass: 'ts-pushmenu-mp-right',
 	pushedClass: 'ts-pushmenu-mp-pushed',
 	levelClass: 'ts-pushmenu-mp-level',
 	levelSelector: 'div.ts-pushmenu-mp-level',
@@ -112,6 +114,7 @@ PushMenu.prototype.options = {
  * @emits modalsInitialized
  */
 PushMenu.prototype._init = function () {
+	var self = this;
 	// if menu is open or not
 	this.options.open = false;
 	this.options.type = (this.options.type === 'cover') ? 'cover' : 'overlap';
@@ -123,8 +126,7 @@ PushMenu.prototype._init = function () {
 	// the mp-level elements
 	this.options.levels = Array.prototype.slice.call(this.options.el.querySelectorAll(this.options.levelSelector));
 	// save the depth of each of these mp-level elements
-	var self = this;
-	this.options.levels.forEach(function (el, i) {
+	this.options.levels.forEach(function (el /*, i*/ ) {
 		el.setAttribute('data-level', getLevelDepth(el, self.options.el.id, self.options.levelClass));
 		// console.log('levels i', i);
 	});
@@ -136,6 +138,10 @@ PushMenu.prototype._init = function () {
 	// this.options.eventtype = mobilecheck() ? 'touchstart' : 'click';
 	// add the class mp-overlap or mp-cover to the main element depending on options.type
 	classie.add(this.options.el, 'ts-pushmenu-mp-' + this.options.type);
+	if (this.options.position === 'right') {
+		classie.add(this.options.el, this.options.rightClass);
+		classie.add(this.options.wrapper, this.options.rightClass);
+	}
 	// initialize / bind the necessary events
 	this._initEvents();
 	this.emit('modalsInitialized');
@@ -172,7 +178,7 @@ PushMenu.prototype._initEvents = function () {
 	});
 
 	// opening a sub level menu
-	this.options.menuItems.forEach(function (el, i) {
+	this.options.menuItems.forEach(function (el /*, i*/ ) {
 		// console.log('this.options.menuItems i', i);
 		// check if it has a sub level
 		var subLevel = el.querySelector(self.options.levelSelector);
@@ -191,7 +197,7 @@ PushMenu.prototype._initEvents = function () {
 
 	// closing the sub levels :
 	// by clicking on the visible part of the level element
-	this.options.levels.forEach(function (el, i) {
+	this.options.levels.forEach(function (el /*, i*/ ) {
 		// console.log('this.options.levels i', i);
 		el.addEventListener('click', function (ev) {
 			ev.stopPropagation();
@@ -206,7 +212,7 @@ PushMenu.prototype._initEvents = function () {
 	});
 
 	// by clicking on a specific element
-	this.options.levelBack.forEach(function (el, i) {
+	this.options.levelBack.forEach(function (el /*, i*/ ) {
 		// console.log('this.options.levelBack i', i);
 		el.addEventListener('click', function (ev) {
 			ev.preventDefault();
@@ -232,7 +238,15 @@ PushMenu.prototype._openMenu = function (subLevel) {
 
 	// move the main wrapper
 	var levelFactor = (this.options.level - 1) * this.options.levelSpacing,
+		translateVal;
+
+	if (this.options.position === 'right') {
+		translateVal = this.options.type === 'overlap' ? this.options.el.offsetWidth - levelFactor : this.options.el.offsetWidth;
+		translateVal = translateVal * -1;
+	}
+	else {
 		translateVal = this.options.type === 'overlap' ? this.options.el.offsetWidth + levelFactor : this.options.el.offsetWidth;
+	}
 
 	this._setTransform('translate3d(' + translateVal + 'px,0,0)');
 
@@ -243,7 +257,12 @@ PushMenu.prototype._openMenu = function (subLevel) {
 		for (var i = 0, len = this.options.levels.length; i < len; ++i) {
 			var levelEl = this.options.levels[i];
 			if (levelEl !== subLevel && !classie.has(levelEl, this.options.menuOpenClass)) {
-				this._setTransform('translate3d(-100%,0,0) translate3d(' + -1 * levelFactor + 'px,0,0)', levelEl);
+				if (this.options.position === 'right') {
+					this._setTransform('translate3d(100%,0,0) translate3d(' + 1 * levelFactor + 'px,0,0)', levelEl);
+				}
+				else {
+					this._setTransform('translate3d(-100%,0,0) translate3d(' + -1 * levelFactor + 'px,0,0)', levelEl);
+				}
 			}
 		}
 	}
@@ -268,6 +287,9 @@ PushMenu.prototype._resetMenu = function () {
 // close sub menus
 PushMenu.prototype._closeMenu = function () {
 	var translateVal = this.options.type === 'overlap' ? this.options.el.offsetWidth + (this.options.level - 1) * this.options.levelSpacing : this.options.el.offsetWidth;
+	if (this.options.position === 'right') {
+		translateVal = translateVal * -1;
+	}
 	this._setTransform('translate3d(' + translateVal + 'px,0,0)');
 	this._toggleLevels();
 };
@@ -1481,10 +1503,10 @@ window.addEventListener('load', function () {
 	menuTriggerElement = document.getElementById('trigger');
 	// modalButtonContainer = document.querySelector('#td-modal-buttons');
 	StyliePushMenu = new PushMenu({
-		type: 'cover', // 'cover',
 		el: menuElement,
-		position: 'right',
-		trigger: menuTriggerElement
+		trigger: menuTriggerElement,
+		type: 'cover', // 'cover',
+		position: 'right'
 	});
 	// modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
 

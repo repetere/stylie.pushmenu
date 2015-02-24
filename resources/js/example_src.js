@@ -17,10 +17,10 @@ window.addEventListener('load', function () {
 	menuTriggerElement = document.getElementById('trigger');
 	// modalButtonContainer = document.querySelector('#td-modal-buttons');
 	StyliePushMenu = new PushMenu({
-		type: 'cover', // 'cover',
 		el: menuElement,
-		position: 'right',
-		trigger: menuTriggerElement
+		trigger: menuTriggerElement,
+		type: 'cover', // 'cover',
+		position: 'right'
 	});
 	// modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
 
