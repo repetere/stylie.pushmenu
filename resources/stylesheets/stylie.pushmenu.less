@@ -1,6 +1,6 @@
 @import "../../node_modules/stylie/resources/stylesheets/stylie.less";
 .ts{
-		
+
 	.ts-pushmenu-container,
 	.ts-pushmenu-scroller{
 		height: 100%;
@@ -150,20 +150,24 @@
 	}
 
 	/* content style */
-	.ts-pushmenu-mp-menu ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.ts-pushmenu-mp-menu h2 {
-		padding:@sizelg;
-		margin: 0;
+	.ts-pushmenu-mp-menu {
+		h1,h2,h3,h4,h5,h6{
+			padding-left: @sizelg;
+			padding-right: @sizelg;
+			padding-top: @sizemd;
+			padding-bottom: @sizemd;
+			margin: 0;
+		}
 		// padding: 1em;
 		// color: rgba(0,0,0,0.4);
 		// text-shadow: 0 0 1px rgba(0,0,0,0.1);
 		// font-weight: 300;
 		// font-size: 2em;
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
 	}
 
 	.ts-pushmenu-mp-menu.ts-pushmenu-mp-overlap h2::before {
@@ -201,11 +205,15 @@
 
 	.ts-pushmenu-mp-menu ul li > a {
 		display: block;
-		padding: 0.7em 1em 0.7em 1.8em;
+		// padding: 0.7em 1em 0.7em 1.8em;
+		padding-left: @sizelg;
+		padding-right: @sizelg;
+		padding-top: @sizemd;
+		padding-bottom: @sizemd;
 		outline: none;
 		box-shadow: inset 0 -1px rgba(0,0,0,0.2);
 		text-shadow: 0 0 1px rgba(255,255,255,0.1);
-		font-size: 1.4em;
+		// font-size: 1.4em;
 		-webkit-transition: background 0.3s, box-shadow 0.3s;
 		-moz-transition: background 0.3s, box-shadow 0.3s;
 		transition: background 0.3s, box-shadow 0.3s;
@@ -242,12 +250,15 @@
 		background: rgba(0,0,0,0.1);
 		outline: none;
 		// color: #fff;
-		text-transform: uppercase;
-		letter-spacing: 1px;
+		// text-transform: uppercase;
+		// letter-spacing: 1px;
 		// font-weight: 700;
 		display: block;
 		// font-size: 0.8em;
-		padding: @sizemd;
+		padding-left: @sizelg;
+		padding-right: @sizelg;
+		padding-top: @sizemd;
+		padding-bottom: @sizemd;
 		position: relative;
 		box-shadow: inset 0 1px rgba(0,0,0,0.1);
 		-webkit-transition: background 0.3s;
@@ -255,6 +266,7 @@
 		transition: background 0.3s;
 	}
 
+/*
 	.ts-pushmenu-mp-back::after {
 		font-family: 'linecons';
 		position: absolute;
@@ -263,7 +275,7 @@
 		font-size: 1.3em;
 		color: rgba(0,0,0,0.3);
 	}
-
+*/
 	.ts-pushmenu-mp-menu .ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > .ts-pushmenu-mp-back,
 	.ts-pushmenu-mp-menu .ts-pushmenu-mp-level.ts-pushmenu-mp-level-overlay > .ts-pushmenu-mp-back::after {
 		background: transparent;

@@ -1483,6 +1483,7 @@ window.addEventListener('load', function () {
 	StyliePushMenu = new PushMenu({
 		type: 'cover', // 'cover',
 		el: menuElement,
+		position: 'right',
 		trigger: menuTriggerElement
 	});
 	// modalButtonContainer.addEventListener('click', openModalButtonHandler, false);
