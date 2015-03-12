@@ -20,7 +20,7 @@
     "util-extend": ">=1.0.1"
   },
   "peerDependencies": {
-    "stylie": "^1.5.1",
+    "stylie": "^1.5.1"
   },
   "devDependencies": {
     "browserify": "~4.2.1",
