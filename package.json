@@ -1,8 +1,8 @@
 {
-  "title": "Stylie Modals",
+  "title": "Stylie Push menu",
   "name": "stylie.pushmenu",
   "description": "Stylie Push Menus, a CommonJS/browserify port of http://tympanus.net/codrops/?p=15313",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -18,9 +18,6 @@
     "classie": ">=0.1.0",
     "detectcss": "^1.0.2",
     "util-extend": ">=1.0.1"
-  },
-  "peerDependencies": {
-    "stylie": "^2.0.0"
   },
   "devDependencies": {
     "browserify": "~4.2.1",
